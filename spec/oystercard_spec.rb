@@ -1,8 +1,15 @@
 require 'oystercard'
 
 describe Oystercard do
-  subject(:oystercard) {described_class.new}
-  before { @test_amount = rand(described_class::MAXIMUM_BALANCE) }
+  before { @default_balance = 5}
+  subject(:oystercard) { described_class.new(@default_balance) }
+  before { @test_amount = rand(described_class::MAXIMUM_BALANCE - @default_balance) }
+
+  describe '#initialize' do
+    it 'creates a card with the default balance by default' do
+      expect(described_class.new.balance).to eq described_class::DEFAULT_BALANCE
+    end
+  end
 
   describe '#balance' do
     it 'allows you to view the maximum balance' do
@@ -39,9 +46,15 @@ describe Oystercard do
   end
 
   describe '#touch_in' do
+
     it 'allows the user to touch in' do
       oystercard.touch_in
       expect(oystercard.in_journey?).to eq true
+    end
+
+    it 'the user cannot touc in if the balance is below the minimum fare' do
+      card = described_class.new(0)
+      expect { card.touch_in }.to raise_error "Insufficient balance. Please top up."
     end
   end
 
@@ -52,5 +65,4 @@ describe Oystercard do
       expect(oystercard.in_journey?).to eq false
     end
   end
-
 end
