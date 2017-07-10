@@ -15,10 +15,7 @@ class Oystercard
     amount
   end
 
-  def deduct(fare)
-    decrease_balance(fare)
-    fare
-  end
+
 
   def maximum_balance
     MAXIMUM_BALANCE
@@ -35,6 +32,7 @@ class Oystercard
 
   def touch_out
     @in_journey = false
+    deduct(MINIMUM_FARE)
   end
 
   private
@@ -45,5 +43,10 @@ class Oystercard
 
   def decrease_balance(amount)
     @balance -= amount
+  end
+
+  def deduct(fare)
+    decrease_balance(fare)
+    fare
   end
 end

@@ -29,16 +29,6 @@ describe Oystercard do
     end
   end
 
-  describe '#deduct' do
-    before { @initial_amount = rand(10..described_class::MAXIMUM_BALANCE) }
-
-    it 'allows deduction' do
-      card = described_class.new(@initial_amount)
-      fare = rand(@initial_amount)
-      expect(card.deduct(fare)).to eq fare
-    end
-  end
-
   describe '#in_journey?' do
     it 'checks the journey status' do
     expect([true,false]).to include(oystercard.in_journey?)
@@ -64,5 +54,10 @@ describe Oystercard do
       oystercard.touch_out
       expect(oystercard.in_journey?).to eq false
     end
+
+    it 'charge minimum fare on touch out' do
+      expect { oystercard.touch_out}.to change {oystercard.balance}.by(-described_class::MINIMUM_FARE)
+    end
+
   end
 end
