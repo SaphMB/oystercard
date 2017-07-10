@@ -4,6 +4,7 @@ describe Oystercard do
   before { @default_balance = 5}
   subject(:oystercard) { described_class.new(@default_balance) }
   before { @test_amount = rand(described_class::MAXIMUM_BALANCE - @default_balance) }
+  let(:station) { double :station }
 
   describe '#initialize' do
     it 'creates a card with the default balance by default' do
@@ -38,25 +39,36 @@ describe Oystercard do
   describe '#touch_in' do
 
     it 'allows the user to touch in' do
-      oystercard.touch_in
+      oystercard.touch_in(station)
       expect(oystercard.in_journey?).to eq true
     end
 
     it 'the user cannot touc in if the balance is below the minimum fare' do
       card = described_class.new(0)
-      expect { card.touch_in }.to raise_error "Insufficient balance. Please top up."
+      expect { card.touch_in(station) }.to raise_error "Insufficient balance. Please top up."
+    end
+
+    it 'expected to remember the station after touching in' do
+      oystercard.touch_in(station)
+      expect(oystercard.entry_station).to eq station
     end
   end
 
   describe '#touch_out' do
     it 'allows the user to touch out' do
-      oystercard.touch_in
+      oystercard.touch_in(station)
       oystercard.touch_out
       expect(oystercard.in_journey?).to eq false
     end
 
     it 'charge minimum fare on touch out' do
       expect { oystercard.touch_out}.to change {oystercard.balance}.by(-described_class::MINIMUM_FARE)
+    end
+
+    it 'expected to forget the entry station after touching out' do
+      oystercard.touch_in(station)
+      oystercard.touch_out
+      expect(oystercard.entry_station).to eq nil
     end
 
   end
