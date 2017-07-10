@@ -10,7 +10,7 @@ class Oystercard
 
   def top_up(amount)
     fail "Cannot exceed £#{MAXIMUM_BALANCE}" if amount + balance > MAXIMUM_BALANCE
-    increase_balance(amount)
+    credit(amount)
     amount
   end
 
@@ -28,22 +28,19 @@ class Oystercard
   end
 
   def touch_out
-    deduct(MINIMUM_FARE)
+    fare = MINIMUM_FARE
+    deduct(fare)
     @entry_station = nil
+    fare
   end
 
   private
 
-  def increase_balance(amount)
+  def credit(amount)
     @balance += amount
   end
 
-  def decrease_balance(amount)
+  def deduct(amount)
     @balance -= amount
-  end
-
-  def deduct(fare)
-    decrease_balance(fare)
-    fare
   end
 end
