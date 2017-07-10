@@ -6,4 +6,8 @@ class Oystercard
     @balance = balance
   end
 
+  def top_up(amount)
+    @balance += amount
+    amount
+  end
 end
