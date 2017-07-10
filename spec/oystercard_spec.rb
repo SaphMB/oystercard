@@ -31,4 +31,26 @@ describe Oystercard do
       expect(card.deduct(fare)).to eq fare
     end
   end
+
+  describe '#in_journey?' do
+    it 'checks the journey status' do
+    expect([true,false]).to include(oystercard.in_journey?)
+    end
+  end
+
+  describe '#touch_in' do
+    it 'allows the user to touch in' do
+      oystercard.touch_in
+      expect(oystercard.in_journey?).to eq true
+    end
+  end
+
+  describe '#touch_out' do
+    it 'allows the user to touch out' do
+      oystercard.touch_in
+      oystercard.touch_out
+      expect(oystercard.in_journey?).to eq false
+    end
+  end
+
 end
